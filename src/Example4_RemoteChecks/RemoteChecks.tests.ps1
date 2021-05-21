@@ -15,6 +15,7 @@ BeforeDiscovery {
 }
 
 Describe "System checks for <_.ComputerName> " -Foreach $sessions { # Discovery phase: Create one describe block per session
+
     BeforeAll { # Run phase: called one time during run phase of describe block
         $session = $_
     }
@@ -24,6 +25,7 @@ Describe "System checks for <_.ComputerName> " -Foreach $sessions { # Discovery 
             $serviceName = $_
             $service = Invoke-Command -Session $session -ScriptBlock { get-service } | Where-Object  Name -eq $serviceName
         }
+        
         It "Service <_> shall be running" {
             $service.Status | Should -Be 'Running'
         }
@@ -32,6 +34,7 @@ Describe "System checks for <_.ComputerName> " -Foreach $sessions { # Discovery 
             $service.StartType | Should -Be 'Automatic'
         }
     }
+    
     Context "Process <_>" -Foreach "System", "svchost" { # one context per process
         BeforeAll { # called one time during run phase of describe block
             $processName = $_
